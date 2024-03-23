@@ -1,0 +1,4 @@
+chroma_db/*
+uploads/*
+base/*
+scripts/__pycache__/*

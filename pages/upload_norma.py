@@ -1,27 +1,20 @@
 import streamlit as st
-import pandas as pd
-from io import StringIO
-from scripts.menu import menu_with_redirect, menu
-
+from scripts.menu import menu_with_redirect
+import os
+from langchain_community.document_loaders import PyPDFLoader
 # Redirect to app.py if not logged in, otherwise show the navigation menu
 menu_with_redirect()
 
 st.title("Repositório de normas")
 
-uploaded_file = st.file_uploader("Choose a file")
+uploaded_file = st.file_uploader("Escolha um arquivo PDF",type=['pdf'],accept_multiple_files=False)
+
+def save_uploadedfile(uploadedfile):
+    with open(os.path.join("uploads", uploadedfile.name), "wb") as f:
+        f.write(uploadedfile.getbuffer())
+    
+
 if uploaded_file is not None:
-    # To read file as bytes:
-    bytes_data = uploaded_file.getvalue()
-    st.write(bytes_data)
+    st.success("Uploaded the file")
+    save_uploadedfile(uploaded_file)
 
-    # To convert to a string based IO:
-    stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
-    st.write(stringio)
-
-    # To read file as string:
-    string_data = stringio.read()
-    st.write(string_data)
-
-    # Can be used wherever a "file-like" object is accepted:
-    dataframe = pd.read_csv(uploaded_file)
-    st.write(dataframe)
