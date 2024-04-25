@@ -1,5 +1,4 @@
-
-## Passo a passo
+### Passo a passo ###
 
  1) Instalar dependências:
         utilize o comando ´ pip install -r requirements.txt ´
