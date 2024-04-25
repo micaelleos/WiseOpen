@@ -43,7 +43,7 @@ def load_context():
             Chroma.from_documents(docs, embedding_function, persist_directory=persist_directory)
             os.remove(item)
 
-def retrive_context(query:str)->list:
+def retrive_context_db(query:str)->list:
     '''Faz query de similaridade na banco de dados e retorna chuncks mais similares'''
 
     vectordb = Chroma(persist_directory=persist_directory, 
@@ -54,9 +54,15 @@ def retrive_context(query:str)->list:
     
     return docs
 
+def retrive_context_txt():
+    with open("database/base.txt", "r", encoding="utf-8") as arquivo:
+    # Lê o conteúdo do arquivo e armazena em uma variável
+        conteudo = arquivo.read()
+    return conteudo
+
 if __name__ == "__main__":
     #load_context()
-    docs = retrive_context('Qual deve ser a disponibilidade de uma API?')
+    docs = retrive_context_db('Qual deve ser a disponibilidade de uma API?')
     for i in docs:
         print(i)
         print('---------------------------------------------------------------------------------')
