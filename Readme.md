@@ -1,7 +1,7 @@
 ### Passo a passo ###
 
  1) Instalar dependências:
-        utilize o comando ´ pip install -r requirements.txt ´
+        utilize o comando `pip install -r requirements.txt`
     
  2) Configurar API Gimini:
     O código foi criado baseado na api do ginimi. Siga os passos para tornar o código funcional com essa API:
@@ -10,4 +10,4 @@
             `{ "api_key": "sua_chave_de_api_aqui" }`
  3) Rodar projeto:
     Se você tiver Make instalado no computado, utilize o comando "make run"
-    Caso contrário, utilize: "python -m streamlit run app.py"
+    Caso contrário, utilize: `python -m streamlit run app.py`
