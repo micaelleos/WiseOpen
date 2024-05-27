@@ -1,4 +1,26 @@
 import streamlit as st
+from streamlit_google_auth import Authenticate
+
+authenticator = Authenticate(
+    secret_credentials_path='google_credentials.json',
+    cookie_name='cliente_auth',
+    cookie_key='this_is_secret',
+    redirect_uri='http://localhost:8501',
+)
+
+hide_footer_style = '''
+<style>
+.reportview-container .main footer {visibility: hidden;}
+'''
+st.markdown(hide_footer_style, unsafe_allow_html=True)
+
+hide_menu_style = '''
+<style>
+#MainMenu {visibility: hidden;}
+</style>
+'''
+
+st.markdown(hide_menu_style, unsafe_allow_html=True)
 
 def header():
     with st.sidebar:
@@ -22,26 +44,35 @@ def authenticated_menu():
 
 
 def unauthenticated_menu():
-    # Show a navigation menu for unauthenticated users
+    # Check if the user is already authenticated
+    authenticator.check_authentification()
     st.sidebar.page_link("app.py", label="Log in")
 
 
 def menu():
-    # Determine if a user is logged in or not, then show the correct
     # navigation menu
     '''if "role" not in st.session_state or st.session_state.role is None:
         unauthenticated_menu()
         return
     authenticated_menu()'''
     header()
-    st.sidebar.page_link("app.py", label="Início")
+    st.sidebar.page_link("pages/inicio.py", label="Início")
     st.sidebar.page_link("pages/main.py", label="Wize")
     st.sidebar.page_link("pages/upload_norma.py", label="Repositório de normas")
+    with st.sidebar:
+        st.image(st.session_state['user_info'].get('picture'))
+        st.write(f"Hello, {st.session_state['user_info'].get('name')}")
+        st.write(f"Your email is {st.session_state['user_info'].get('email')}")
+        
+        if st.button('Log out'):
+            authenticator.logout()
 
+    
 
 def menu_with_redirect():
-    # Redirect users to the main page if not logged in, otherwise continue to
-    # render the navigation menu
-    #if "role" not in st.session_state or st.session_state.role is None:
-    #    st.switch_page("app.py")
-    menu()
+    # Display the login button if the user is not authenticated
+    if not st.session_state.get('connected', False):
+        st.switch_page("app.py")
+    # Display the user information and logout button if the user is authenticated
+    else:
+        menu()

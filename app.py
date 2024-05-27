@@ -1,25 +1,24 @@
 import streamlit as st
-from scripts.menu import menu
+from streamlit_google_auth import Authenticate
 
-st.markdown('''## Bem-vindo à nossa Plataforma de Busca Normativa do Banco Central!
+authenticator = Authenticate(
+    secret_credentials_path='google_credentials.json',
+    cookie_name='cliente_auth',
+    cookie_key='this_is_secret',
+    redirect_uri='http://localhost:8501',
+)
 
-Sua fonte definitiva para encontrar informações normativas relevantes do Banco Central do Brasil de maneira rápida e eficiente.
+# Check if the user is already authenticated
+authenticator.check_authentification()
 
-### Como Funciona:
 
-1. **Pergunte ao Wize:** Utilize nossa ferramenta de busca intuitiva para fazer perguntas sobre normas do Banco Central. Nosso assistente virtual está pronto para fornecer respostas precisas e relevantes para suas consultas.
+# Display the login button if the user is not authenticated
+if not st.session_state.get('connected', True):
+    st.markdown('Bem vindo ao aplicativo WiseOpen. Para acessar faça login com sua conta google:')
+    authenticator.login(justify_content='flex-start')
+    #authorization_url = authenticator.get_authorization_url()
+    #st.link_button('Login', authorization_url)
+    #st.markdown(f'<a href="{authorization_url}" target="_self"><button style="background-color: #4CAF50; /* Green */ border: none; color: white; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;">Fazer Login</button></a>', unsafe_allow_html=True)
 
-2. **Upload de Novas Normas:** Você também tem a oportunidade de contribuir para o aprimoramento da nossa base de dados. Faça o upload de novas normas e regulamentações diretamente na plataforma. Nosso wizard aprenderá com elas, tornando-se cada vez mais inteligente e capaz de oferecer respostas ainda melhores.
-
-### Por que Usar Nossa Plataforma:
-
-- **Eficiência:** Não perca mais tempo procurando informações normativas manualmente. Nossa plataforma oferece resultados instantâneos e precisos para suas consultas.
-
-- **Atualizações Constantes:** Mantemos nossa base de dados sempre atualizada com as últimas normas e regulamentações do Banco Central, garantindo que você tenha acesso às informações mais recentes.
-
-- **Contribuição Colaborativa:** Ao fazer o upload de novas normas, você contribui para a melhoria contínua da nossa plataforma, tornando-a ainda mais útil para todos os usuários.
-
-Comece a explorar nossa Plataforma de Busca Normativa agora e simplifique sua pesquisa por informações do Banco Central!
-
-''')
-menu() # Render the dynamic menu!
+else:
+    st.switch_page("pages/inicio.py")

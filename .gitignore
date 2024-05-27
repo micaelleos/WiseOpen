@@ -1,5 +1,6 @@
-chroma_db/*
 uploads/*
 base/*
 scripts/__pycache__/*
 config.json
+.env
+google_credentials.json

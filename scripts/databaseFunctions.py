@@ -1,68 +1,59 @@
 # This peace of code load the files in directory to the database
 import os
-from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.embeddings.sentence_transformer import (
     SentenceTransformerEmbeddings,
 )
-from langchain_community.vectorstores import Chroma
-from langchain_text_splitters import CharacterTextSplitter
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.vectorstores import Chroma
+from dotenv import load_dotenv
+
+# Carregar variáveis de ambiente a partir de um arquivo .env
+load_dotenv()
 
 # create the open-source embedding function
-embedding_function = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
 persist_directory="./chroma_db"
 
-def listar_documentos_caminho(pasta) -> list:
-    '''Retorna lista de arquivos dentro do diretório'''
-    documentos = []
+embedding = OpenAIEmbeddings(openai_api_key=os.getenv('OPENAI_API_KEY'))
 
-    # Percorre todos os arquivos e pastas no caminho fornecido
-    for item in os.listdir(pasta):
-        caminho_completo = os.path.join(pasta, item)
-        
-        # Verifica se é um arquivo
-        if os.path.isfile(caminho_completo):
-            documentos.append(caminho_completo)
-    
-    return documentos
+def load_to_database(documents,chunk_size=500,chunk_overlap=50):
+    '''Faz o load do docs no banco de dados'''
 
-def load_context():
-    '''Faz o load do PDF no banco de dados'''
-    lista = listar_documentos_caminho("./uploads/")
+    r_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+        separators=["\n\n", "\n", "(?<=\. )", " ", ""]
+    )
 
-    if lista:
-        for item in lista:
-            # load the document and split it into chunks
-            loader = PyPDFLoader(item)
-            documents = loader.load()
+    if documents:
+        for item in documents:
+            splits = r_splitter.split_documents(item)
             
-            # split it into chunks
-            text_splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=50)
-            docs = text_splitter.split_documents(documents)
-
-            # load it into Chroma
-            Chroma.from_documents(docs, embedding_function, persist_directory=persist_directory)
-            os.remove(item)
+    vectordb = Chroma.from_documents(
+        documents=splits,
+        embedding=embedding,
+        persist_directory=persist_directory
+    )
+    vectordb.persist()
+    return vectordb
 
 def retrive_context_db(query:str)->list:
     '''Faz query de similaridade na banco de dados e retorna chuncks mais similares'''
 
     vectordb = Chroma(persist_directory=persist_directory, 
-                    embedding_function=embedding_function)
+                    embedding_function=embedding)
     
     retriever = vectordb.as_retriever()
     docs = retriever.get_relevant_documents(query)
-    
     return docs
 
-def retrive_context_txt():
-    with open("database/base.txt", "r", encoding="utf-8") as arquivo:
-    # Lê o conteúdo do arquivo e armazena em uma variável
-        conteudo = arquivo.read()
-    return conteudo
+def vector_database():
+    db = Chroma(persist_directory=persist_directory, embedding_function=embedding)
+    return db
 
 if __name__ == "__main__":
-    #load_context()
-    docs = retrive_context_db('Qual deve ser a disponibilidade de uma API?')
-    for i in docs:
-        print(i)
-        print('---------------------------------------------------------------------------------')
+    from documents_loaders import preprocessing_docs
+    vectordb = load_to_database(preprocessing_docs('uploads'))
+    print(vectordb._collection.count())
+
+    
