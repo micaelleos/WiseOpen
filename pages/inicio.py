@@ -1,12 +1,10 @@
 import streamlit as st
 from scripts.menu import menu_with_redirect
 
+menu_with_redirect() # Render the dynamic menu!
 
-
-st.markdown('''## Bem-vindo à nossa Plataforma de Busca Normativa do Banco Central!
-
-    Sua fonte definitiva para encontrar informações normativas relevantes do Banco Central do Brasil de maneira rápida e eficiente.
-
+st.markdown('''## Bem-vindo à nossa Plataforma de Busca Normativa do Banco Central! 
+            Sua fonte definitiva para encontrar informações normativas relevantes do Banco Central do Brasil de maneira rápida e eficiente.
     ### Como Funciona:
 
     1. **Pergunte ao Wize:** Utilize nossa ferramenta de busca intuitiva para fazer perguntas sobre normas do Banco Central. Nosso assistente virtual está pronto para fornecer respostas precisas e relevantes para suas consultas.
@@ -21,8 +19,5 @@ st.markdown('''## Bem-vindo à nossa Plataforma de Busca Normativa do Banco Cent
 
     - **Contribuição Colaborativa:** Ao fazer o upload de novas normas, você contribui para a melhoria contínua da nossa plataforma, tornando-a ainda mais útil para todos os usuários.
 
-    Comece a explorar nossa Plataforma de Busca Normativa agora e simplifique sua pesquisa por informações do Banco Central!
+    Comece a explorar nossa Plataforma de Busca Normativa agora e simplifique sua pesquisa por informações do Banco Central!''')
 
-    ''')
-
-menu_with_redirect() # Render the dynamic menu!
