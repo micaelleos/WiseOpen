@@ -44,14 +44,17 @@ def load_documents(upload_dir) -> list:
     
 
 def preprocessing_docs(upload_dir):
+    "Faz validações e limpezas no arquivo"
     try:
         documents = load_documents(upload_dir)
 
         # limpeza de arquivo
-        pattern = re.compile(r'\x00') # acrescentar \n
+        pattern_x00 = re.compile(r'\x00') 
+        pattern_n = re.compile(r'\n')
         for pages in documents:
             for i in range(0,len(pages)):
-                pages[i].page_content = pattern.sub('ti', pages[i].page_content)
+                pages[i].page_content = pattern_x00.sub('ti', pages[i].page_content)
+                pages[i].page_content = pattern_n.sub(' ', pages[i].page_content)
 
         return documents
     
@@ -64,4 +67,5 @@ def preprocessing_docs(upload_dir):
 
 if __name__ == "__main__":
     docs = preprocessing_docs('uploads')
+    #docs = load_documents('uploads')
     print(docs)
