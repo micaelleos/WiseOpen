@@ -8,3 +8,6 @@ base="dark"
 
 [client]
 showSidebarNavigation = false
+
+[server]
+enableStaticServing = true
