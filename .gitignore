@@ -4,3 +4,4 @@ scripts/__pycache__/*
 config.json
 .env
 google_credentials.json
+chroma_db/*
