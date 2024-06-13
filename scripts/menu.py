@@ -1,5 +1,8 @@
 import streamlit as st
 from streamlit_google_auth import Authenticate
+#from st_on_hover_tabs import on_hover_tabs
+#st.set_page_config(layout="wide")
+
 
 st.markdown(
     r"""
@@ -7,6 +10,11 @@ st.markdown(
     .stDeployButton {
             visibility: hidden;
         }
+    .st-emotion-cache-6qob1r {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
     </style>
     """, unsafe_allow_html=True
 )
@@ -32,7 +40,14 @@ pop_over_container = f"""
     </div>
 """
 
-authenticator = st.session_state['authenticator']
+#authenticator = st.session_state['authenticator']
+
+authenticator = Authenticate(
+    secret_credentials_path='google_credentials.json',
+    cookie_name='cliente_auth',
+    cookie_key='this_is_secret',
+    redirect_uri='http://localhost:8501',
+)
 
 def header():
     with st.sidebar:
@@ -63,7 +78,7 @@ def unauthenticated_menu():
 
 def user_logged():
     with st.sidebar:
-        st.container(height=80, border=False)
+        #st.container(height=80, border=False)
         with st.container(border=True):
             cols = st.columns([0.2, 0.6, 0.4])
             
@@ -86,14 +101,23 @@ def user_logged():
                     if st.button("Logout",use_container_width=True):
                         authenticator.logout()
 
+def list_chat():
+    with st.sidebar:
+        #st.logo('src/owl Open.png')
+        st.button("Novo chat",use_container_width=True)
+        with st.container(height=200,border=False):
+            for i in range(15):
+                st.write("link teste")
+                #st.markdown()
+        st.divider()
+
 def menu():
     # navigation menu
-    #header()
+    header()
+    #list_chat()
     st.sidebar.page_link("pages/inicio.py", label="Início")
     st.sidebar.page_link("pages/chat.py", label="Wize")
     st.sidebar.page_link("pages/upload_norma.py", label="Repositório de normas")
-    with st.sidebar:
-        st.write('-----------')
     user_logged()
 
     

@@ -118,9 +118,9 @@ st.markdown("""
         background-image: linear-gradient(90deg, rgb(50, 10, 255), rgb(255, 128, 197));
         z-index: 999990;
     }
-    .st-emotion-cache-1y4p8pa {
+    .st-emotion-cache-13ln4jf{
     width: 100%;
-    padding: 4rem 1rem 10rem;
+    padding: 2rem 1rem 10rem;
     max-width: 46rem;
     }           
 </style>
